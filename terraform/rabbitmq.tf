@@ -3,6 +3,10 @@ data "google_secret_manager_secret_version" "rabbitmq_password" {
   version = "latest"
 }
 
+resource "google_compute_address" "static" {
+  name = "ipv4-address"
+}
+
 resource "google_compute_instance" "rabbitmq_vm" {
   name         = var.instance_name
   machine_type = var.instance_type
@@ -17,6 +21,9 @@ resource "google_compute_instance" "rabbitmq_vm" {
   network_interface {
     subnetwork = google_compute_subnetwork.vpc_subnetwork.id
     network_ip = "10.10.10.10"
+    access_config {
+      nat_ip = google_compute_address.static.address
+    }
   }
 
   metadata_startup_script = <<-EOT
@@ -36,7 +43,7 @@ resource "google_compute_instance" "rabbitmq_vm" {
 
     # Declare exchange (topic)
     sudo rabbitmqadmin -u ${var.rabbitmq_user} -p ${data.google_secret_manager_secret_version.rabbitmq_password.secret_data} declare exchange name=${var.rabbitmq_topic} type=topic durable=true
-    
+
     # Bind queue to exchange
     sudo rabbitmqadmin -u ${var.rabbitmq_user} -p ${data.google_secret_manager_secret_version.rabbitmq_password.secret_data} declare binding source="${var.rabbitmq_topic}" destination_type="queue" destination="${var.rabbitmq_queue}" routing_key="#"
 

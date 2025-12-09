@@ -62,3 +62,13 @@ variable "rabbitmq_topic" {
   type        = string
   default     = "my-topic"
 }
+
+variable "producer_image" {
+  description = "The container image for the producer service."
+  type        = string
+}
+
+variable "consumer_image" {
+  description = "The container image for the consumer service."
+  type        = string
+}

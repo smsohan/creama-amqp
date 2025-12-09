@@ -1,6 +1,6 @@
 resource "random_password" "rabbitmq_password" {
   length  = 16
-  special = true
+  special = false
 }
 
 resource "google_secret_manager_secret" "rabbitmq_password_secret" {
