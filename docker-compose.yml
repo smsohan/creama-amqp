@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  producer:
+    build: producer # Assuming the producer's Dockerfile is in ../producer
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: user
+      RABBITMQ_PASSWORD: password
+      RABBITMQ_QUEUE: my_queue
+    # Add any other necessary environment variables for your producer here
+    # For example, if your producer uses a specific queue name:
+    # PRODUCER_QUEUE_NAME: my_queue
+    ports:
+      - "8080:8080"
+
+  consumer:
+    build: consumer
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: user
+      RABBITMQ_PASSWORD: password
+      RABBITMQ_QUEUE: my_queue
+      QPS: 10
+
+volumes:
+  rabbitmq_data:
