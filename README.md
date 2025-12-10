@@ -1,4 +1,4 @@
-This is an exmaple of how to use Cloud Run Worker Pools to autoscale RabbitMQ consumers.
+This is an exmaple of how to use Cloud Run Worker Pools with [CREMA](https://github.com/GoogleCloudPlatform/cloud-run-external-metrics-autoscaling) to autoscale RabbitMQ consumers.
 
 ## Components
 
