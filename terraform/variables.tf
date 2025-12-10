@@ -72,3 +72,23 @@ variable "consumer_image" {
   description = "The container image for the consumer service."
   type        = string
 }
+
+variable "rabbitmq_management_user" {
+
+  description = "The username for RabbitMQ management API."
+
+  type        = string
+
+  default     = "management-user"
+
+}
+
+
+
+variable "scaler_image" {
+
+  description = "The container image for the scaler service."
+
+  type        = string
+
+}

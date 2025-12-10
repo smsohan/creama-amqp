@@ -1,9 +1,9 @@
 # IAM binding for Cloud Run service account to access the secret
 resource "google_secret_manager_secret_iam_member" "secret_accessor" {
-  project   = var.project_id
+  project   = google_secret_manager_secret.rabbitmq_password_secret.project
   secret_id = google_secret_manager_secret.rabbitmq_password_secret.id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_project_service_identity.run_sa.email}"
+  member    = "serviceAccount:${google_service_account.run_sa.email}"
 }
 
 # Enables the Cloud Run API
@@ -13,12 +13,18 @@ resource "google_project_service_identity" "run_sa" {
   service  = "run.googleapis.com"
 }
 
+resource "google_service_account" "run_sa" {
+    account_id   = "run-rabbitmq-sa"
+    display_name = "Service Account for AMQP producers consumers"
+}
 
 resource "google_cloud_run_v2_service" "producer" {
   name     = "producer-service"
   location = var.region
+  deletion_protection = false
 
   template {
+    service_account = google_service_account.run_sa.email
     containers {
       image = var.producer_image
       ports {
@@ -65,12 +71,14 @@ resource "google_cloud_run_v2_worker_pool" "consumer" {
   name     = "consumer-worker"
   location = var.region
   launch_stage = "BETA"
+  deletion_protection = false
 
   scaling {
     manual_instance_count = 1
   }
 
   template {
+    service_account = google_service_account.run_sa.email
     containers {
       image = var.consumer_image
       env {
@@ -101,7 +109,7 @@ resource "google_cloud_run_v2_worker_pool" "consumer" {
 
       env {
         name = "QPS"
-        value = "10"
+        value = "1"
       }
     }
 

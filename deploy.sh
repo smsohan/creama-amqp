@@ -46,3 +46,5 @@ terraform apply -auto-approve \
   -var="region=$REGION" \
   -var="producer_image=$PRODUCER_IMAGE_DIGEST" \
   -var="consumer_image=$CONSUMER_IMAGE_DIGEST"
+
+gcloud builds submit --tag us-central1-docker.pkg.dev/sohansm-project/crema-amqp/crema:latest .
