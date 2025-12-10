@@ -26,29 +26,23 @@ The following diagram illustrates the relationship between the components:
                           v
 +-------------------------+-------------------------+
 |                                                   |
-|                RabbitMQ (on GCE VM)                 |
+|                RabbitMQ (on GCE VM)               |
 |                                                   |
 +-------------------------+-------------------------+
-                          |
-                          | Messages
-                          v
-                  +-------+---------+
-                  |                 |
-                  |  Consumer       |
-                  | (Cloud Run      |
-                  |  Worker Pool)   |
-                  |                 |
-                  +-------+---------+
-                          ^
-                          | Scaling actions
-                          |
-                  +-------+---------+
-                  |                 |
-                  |  CREMA Scaler   |
-                  | (Monitors Queue |
-                  |   Length)       |
-                  |                 |
-                  +-----------------+
+                          |                         ^
+                          | Messages                | Monitor queue length
+                          v                         |
+                  +-------+---------+         +-----+-----------+
+                  |                 |         |                 |
+                  |  Consumer       |         |  CREMA Scaler   |
+                  | (Cloud Run      |         | (Monitors Queue |
+                  |  Worker Pool)   |         |   Length)       |
+                  |                 |         |                 |
+                  +-------+---------+         +----+------------+
+                          ^                        |
+                          | Scaling actions        |
+                          |                        |
+                          +------------------------+
 ```
 
 ## Directory Structure
