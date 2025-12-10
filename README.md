@@ -35,8 +35,8 @@ The following diagram illustrates the relationship between the components:
                   +-------+---------+         +-----+-----------+
                   |                 |         |                 |
                   |  Consumer       |         |  CREMA Scaler   |
-                  | (Cloud Run      |         | (Monitors Queue |
-                  |  Worker Pool)   |         |   Length)       |
+                  | (Cloud Run      |         | (Cloud Run      |
+                  |  Worker Pool)   |         |   Service)      |
                   |                 |         |                 |
                   +-------+---------+         +----+------------+
                           ^                        |
